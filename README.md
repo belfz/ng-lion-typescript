@@ -1,7 +1,8 @@
 # ng-lion-TYPESCRIPT
 
-A
+A fork of angular boilerplate repository called [ng-lion](https://github.com/belfz/ng-lion), this time written in TypeScript.
 
+Features:
 - TypeScript (!!!)
 - Angular 1.4
 - UI-router
@@ -10,8 +11,6 @@ A
 - Browserify
 - LESS
 - Skeleton CSS
-
-boilerplate.
 
 ## How to install?
 
@@ -36,3 +35,6 @@ or, to trigger the browserify + watchify without running the tests:
 ```
 $ gulp :browserify
 ```
+
+## Credits
+Written in Visual Studio Code, which I highly recommend ;-)
