@@ -24,6 +24,7 @@ module.exports = function (gulp) {
 	
 	function bundle () {
 		return b.bundle()
+			.on('error', gutil.log.bind(gutil, 'Browserify Error'))
 		    .pipe(source('bundled.js'))
 		    .pipe(ngAnnotate())
 		    .pipe(buffer())
