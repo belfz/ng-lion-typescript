@@ -13,23 +13,37 @@ module.exports = function (gulp) {
 	
 	var customOpts = {
   		entries: ['src/ts/main.ts'],
-  		debug: true
+  		debug: true //add dependency on production env?
 	};
 	var opts = assign({}, watchify.args, customOpts);
-	var b = watchify(browserify(opts).plugin('tsify'));
+
+	var unwatched = browserify(opts).plugin('tsify'); //doesn't watch for changes - can be used in production
 	
-	gulp.task(':browserify', [':tslint', ':clean-js'], bundle); // so you can run `gulp :browserify` to build the file
-	b.on('update', bundle); // on any dep update, runs the bundler
-	b.on('log', gutil.log); // output build logs to terminal
+	var watched = watchify(browserify(opts).plugin('tsify'));
+	watched.on('update', bundle); // on any dep update, runs the bundler
+	watched.on('log', gutil.log); // output build logs to terminal
 	
-	function bundle () {
-		return b.bundle()
+	/**
+	 * This should be used in development to constantly 'browserify' and compile TS code.
+	 */
+	gulp.task(':watchify', [':tslint', ':clean-js'], function () {
+		return bundle (watched);
+	});
+
+	/**
+	 * This builds with 'browserify' and compiles TS code only once.
+	 */
+	gulp.task(':browserify', [':tslint', ':clean-js'], function () {
+		return bundle (unwatched);
+	});
+	
+	function bundle (target) {
+		return target.bundle()
 			.on('error', gutil.log.bind(gutil, 'Browserify Error'))
 		    .pipe(source('bundled.js'))
 		    .pipe(ngAnnotate())
 		    .pipe(buffer())
 		    .pipe(sourcemaps.init({loadMaps: true}))
-		        // Add transformation tasks to the pipeline here.
 		        .pipe(uglify())
 		        .on('error', gutil.log)
 		    .pipe(sourcemaps.write('./'))
