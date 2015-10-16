@@ -15,12 +15,13 @@ module.exports = function (gulp) {
   		entries: ['src/ts/main.ts'],
   		debug: true //add dependency on production env?
 	};
-	var opts = assign({}, watchify.args, customOpts);
 
-	var unwatched = browserify(opts).plugin('tsify'); //doesn't watch for changes - can be used in production
+	var unwatched = browserify(customOpts).plugin('tsify'); //doesn't watch for changes - can be used in production
 	
-	var watched = watchify(browserify(opts).plugin('tsify'));
-	watched.on('update', bundle); // on any dep update, runs the bundler
+	var watched = watchify(browserify(customOpts).plugin('tsify'));
+	watched.on('update', function () {
+		return bundle (watched);
+	}); // on any dep update, runs the bundler
 	watched.on('log', gutil.log); // output build logs to terminal
 	
 	/**
