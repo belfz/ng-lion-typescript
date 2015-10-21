@@ -33,7 +33,7 @@ $ gulp build
 
 or, to trigger the browserify + watchify without running the tests:
 ```
-$ gulp :browserify
+$ gulp build.dev
 ```
 
 ## Credits
